@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlobeTrotter Yaoundé — Découvrez Yaoundé autrement</title>
+<meta name="description" content="L'assistant de voyage intelligent pour Yaoundé : recommandations personnalisées, itinéraires de sorties, prix en FCFA. Disponible sur Android, Web et Windows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============ CONFIGURATION DES LIENS — MODIFIE ICI ============ */
+/* APK      : place ton fichier dans  downloads/globetrotter-yaounde.apk      */
+/* Windows  : place ton zip dans      downloads/globetrotter-yaounde-windows.zip */
+/* Web app  : copie le contenu de flutter build web dans le dossier  app/     */
+/* =============================================================== */
+
+:root{
+  --nuit:#061230;
+  --encre:#0A1E4A;
+  --panneau:#0D2557;
+  --ciel:#4FA3F7;
+  --mandarine:#F97316;
+  --braise:#EA580C;
+  --etoile:#FCD116;
+  --craie:#F4F7FF;
+  --brume:rgba(244,247,255,.62);
+  --ligne:rgba(79,163,247,.18);
+  --r-lg:26px;
+  --r-md:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--nuit);
+  color:var(--craie);
+  overflow-x:hidden;
+  line-height:1.6;
+}
+::selection{background:var(--mandarine);color:var(--nuit)}
+
+/* ---------- NAV ---------- */
+nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px clamp(20px,5vw,64px);
+  background:rgba(6,18,48,.82);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--ligne);
+}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--craie)}
+.logo-badge{
+  width:40px;height:40px;border-radius:12px;
+  background:radial-gradient(circle at 32% 28%,#4FA3F7,#0D47A1);
+  display:grid;place-items:center;position:relative;
+  box-shadow:0 0 0 2px rgba(79,163,247,.35);
+}
+.logo-badge::after{
+  content:"";position:absolute;inset:-6px;border-radius:50%;
+  border:2.5px solid var(--mandarine);
+  border-left-color:transparent;border-bottom-color:transparent;
+  transform:rotate(-24deg);
+}
+.logo-badge svg{width:20px;height:20px}
+.logo-name{font-family:'Unbounded';font-weight:700;font-size:15px;letter-spacing:.2px}
+.logo-name em{font-style:normal;color:var(--mandarine)}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a{color:var(--brume);text-decoration:none;font-size:14.5px;font-weight:500;transition:color .2s}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--craie)}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 22px;border-radius:14px;
+  font-family:'Outfit';font-weight:700;font-size:15px;
+  text-decoration:none;cursor:pointer;border:none;
+  transition:transform .18s,box-shadow .18s,background .18s;
+}
+.btn:focus-visible{outline:3px solid var(--ciel);outline-offset:2px}
+.btn-orange{
+  background:linear-gradient(120deg,#FB923C,var(--braise));
+  color:#fff;
+  box-shadow:0 10px 28px rgba(249,115,22,.35);
+}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(249,115,22,.45)}
+.btn-ghost{
+  background:rgba(79,163,247,.10);
+  color:var(--craie);
+  border:1px solid var(--ligne);
+}
+.btn-ghost:hover{background:rgba(79,163,247,.18)}
+.btn-sm{padding:9px 16px;font-size:13.5px;border-radius:11px}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+  gap:clamp(24px,4vw,60px);
+  align-items:center;
+  padding:clamp(48px,8vh,96px) clamp(20px,5vw,64px) clamp(64px,10vh,110px);
+  max-width:1240px;margin:0 auto;
+}
+.hero::before{
+  content:"";position:absolute;top:-180px;right:-140px;
+  width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(249,115,22,.16),transparent 65%);
+  pointer-events:none;
+}
+.hero::after{
+  content:"";position:absolute;bottom:-160px;left:-160px;
+  width:480px;height:480px;border-radius:50%;
+  background:radial-gradient(circle,rgba(79,163,247,.13),transparent 65%);
+  pointer-events:none;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono';font-size:12.5px;font-weight:600;
+  color:var(--ciel);letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:20px;
+}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--mandarine)}
+h1{
+  font-family:'Unbounded';
+  font-size:clamp(30px,4.6vw,54px);
+  font-weight:900;line-height:1.12;
+  letter-spacing:-.5px;
+  margin-bottom:22px;
+}
+h1 .accent{color:var(--mandarine)}
+h1 .ville{
+  background:linear-gradient(100deg,var(--ciel),#8AC4FF);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-sub{font-size:clamp(15.5px,1.4vw,18px);color:var(--brume);max-width:520px;margin-bottom:34px;font-weight:300}
+.hero-sub strong{color:var(--craie);font-weight:600}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:34px}
+.hero-meta{display:flex;gap:26px;flex-wrap:wrap}
+.meta-item{display:flex;flex-direction:column;gap:2px}
+.meta-item b{font-family:'Unbounded';font-size:19px;font-weight:700;color:var(--craie)}
+.meta-item span{font-size:12.5px;color:var(--brume)}
+
+/* ---------- PHONE MOCKUP (pure CSS, real Yaoundé content) ---------- */
+.mock-wrap{position:relative;display:grid;place-items:center;min-height:520px}
+.phone{
+  width:min(290px,78vw);
+  border-radius:42px;
+  background:#0B1B3F;
+  border:8px solid #12306E;
+  box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(79,163,247,.25),0 0 70px rgba(249,115,22,.10);
+  overflow:hidden;
+  transform:rotate(-4deg);
+  animation:float 7s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-14px)}}
+.phone-notch{height:26px;display:grid;place-items:center}
+.phone-notch i{width:86px;height:7px;border-radius:5px;background:#1D3C7E;display:block}
+.app-head{padding:12px 16px 4px}
+.app-hello{font-size:14.5px;font-weight:700}
+.app-hello span{color:var(--etoile)}
+.app-sub{font-size:10.5px;color:var(--brume)}
+.app-search{
+  margin:9px 16px;padding:8px 12px;border-radius:11px;
+  background:rgba(79,163,247,.12);border:1px solid var(--ligne);
+  font-size:10.5px;color:var(--brume);
+  display:flex;align-items:center;gap:7px;
+}
+.app-cats{display:flex;gap:7px;padding:2px 16px 8px;overflow:hidden}
+.app-cat{
+  font-size:9.5px;padding:5px 10px;border-radius:20px;white-space:nowrap;
+  background:rgba(79,163,247,.10);border:1px solid var(--ligne);color:var(--brume);
+}
+.app-cat.on{background:var(--mandarine);border-color:var(--mandarine);color:#fff;font-weight:700}
+.app-card{
+  margin:0 16px 11px;border-radius:15px;overflow:hidden;
+  background:var(--panneau);border:1px solid var(--ligne);
+}
+.app-img{height:74px;display:grid;place-items:end start;padding:8px}
+.app-img.febe{background:linear-gradient(160deg,#F59E0B 0%,#B45309 55%,#1B5E20 100%)}
+.app-img.marche{background:linear-gradient(160deg,#4FA3F7 0%,#1565D8 60%,#0A1E4A 100%)}
+.app-img .pill{
+  font-size:8.5px;font-weight:700;padding:3px 8px;border-radius:14px;
+  background:rgba(6,18,48,.72);backdrop-filter:blur(4px);color:#fff;
+}
+.app-body{padding:9px 11px 11px}
+.app-row{display:flex;justify-content:space-between;align-items:baseline}
+.app-name{font-size:12px;font-weight:700}
+.app-price{font-family:'JetBrains Mono';font-size:9.5px;color:var(--mandarine);font-weight:600}
+.app-loc{font-size:9.5px;color:var(--brume);margin-top:1px}
+.app-reason{
+  margin-top:7px;font-size:9px;color:var(--etoile);
+  display:flex;align-items:center;gap:5px;
+}
+.app-tabbar{
+  display:flex;justify-content:space-around;
+  padding:9px 6px 13px;border-top:1px solid var(--ligne);
+  font-size:8.5px;color:var(--brume);
+}
+.app-tab{display:flex;flex-direction:column;align-items:center;gap:2px}
+.app-tab.on{color:var(--mandarine);font-weight:700}
+.app-tab svg{width:15px;height:15px}
+/* floating chips around the phone */
+.chip-float{
+  position:absolute;
+  padding:9px 15px;border-radius:16px;
+  background:rgba(13,37,87,.88);backdrop-filter:blur(8px);
+  border:1px solid var(--ligne);
+  font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 14px 32px rgba(0,0,0,.4);
+  animation:float2 6s ease-in-out infinite;
+}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.chip-a{top:9%;left:0;animation-delay:.6s}
+.chip-b{bottom:16%;right:0;animation-delay:1.4s}
+.chip-c{top:44%;right:-4%;animation-delay:2.2s}
+.chip-float .dot{width:9px;height:9px;border-radius:50%}
+
+/* ---------- SECTIONS ---------- */
+section{max-width:1240px;margin:0 auto;padding:clamp(56px,9vh,100px) clamp(20px,5vw,64px)}
+.sec-eyebrow{composes:eyebrow}
+h2{
+  font-family:'Unbounded';font-size:clamp(23px,3vw,34px);
+  font-weight:700;letter-spacing:-.4px;line-height:1.2;
+  margin-bottom:14px;max-width:640px;
+}
+.sec-sub{color:var(--brume);max-width:560px;margin-bottom:46px;font-weight:300;font-size:16px}
+
+/* ---------- DOWNLOAD HUB ---------- */
+#telecharger{position:relative}
+.detect-note{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'JetBrains Mono';font-size:12px;color:var(--ciel);
+  background:rgba(79,163,247,.08);border:1px solid var(--ligne);
+  padding:8px 14px;border-radius:20px;margin-bottom:34px;
+}
+.detect-note b{color:var(--mandarine)}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.dl-card{
+  background:linear-gradient(165deg,var(--encre),var(--panneau));
+  border:1px solid var(--ligne);
+  border-radius:var(--r-lg);
+  padding:30px 28px;
+  display:flex;flex-direction:column;gap:16px;
+  position:relative;
+  transition:transform .22s,border-color .22s,box-shadow .22s;
+}
+.dl-card:hover{transform:translateY(-6px);border-color:rgba(249,115,22,.4)}
+.dl-card.reco{
+  border-color:var(--mandarine);
+  box-shadow:0 18px 50px rgba(249,115,22,.22);
+}
+.dl-card.reco::before{
+  content:"Recommandé pour votre appareil";
+  position:absolute;top:-13px;left:24px;
+  background:linear-gradient(120deg,#FB923C,var(--braise));
+  color:#fff;font-size:11px;font-weight:700;
+  padding:5px 13px;border-radius:16px;letter-spacing:.3px;
+}
+.dl-icon{
+  width:54px;height:54px;border-radius:16px;
+  display:grid;place-items:center;
+  background:rgba(79,163,247,.12);border:1px solid var(--ligne);
+}
+.dl-icon svg{width:26px;height:26px}
+.dl-card h3{font-family:'Unbounded';font-size:17.5px;font-weight:700}
+.dl-card p{color:var(--brume);font-size:14px;font-weight:300;flex-grow:1}
+.dl-file{
+  font-family:'JetBrains Mono';font-size:11px;color:var(--brume);
+  display:flex;align-items:center;gap:7px;
+}
+.dl-file i{width:7px;height:7px;border-radius:50%;background:var(--ciel);display:inline-block}
+
+/* ---------- FEATURES ---------- */
+#fonctionnalites{border-top:1px solid var(--ligne)}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.feat{
+  background:rgba(13,37,87,.45);
+  border:1px solid var(--ligne);
+  border-radius:var(--r-md);
+  padding:24px 22px;
+  transition:background .2s,transform .2s;
+}
+.feat:hover{background:rgba(13,37,87,.75);transform:translateY(-4px)}
+.feat-ic{
+  width:42px;height:42px;border-radius:12px;
+  display:grid;place-items:center;margin-bottom:15px;
+  background:rgba(249,115,22,.13);
+}
+.feat-ic svg{width:21px;height:21px}
+.feat h3{font-size:16px;font-weight:700;margin-bottom:7px;font-family:'Outfit'}
+.feat p{color:var(--brume);font-size:13.5px;font-weight:300}
+
+/* ---------- COMMUNITY ---------- */
+#communaute .comm-box{
+  position:relative;
+  border-radius:var(--r-lg);
+  padding:clamp(34px,5vw,56px);
+  background:
+    radial-gradient(circle at 85% 15%,rgba(252,209,22,.14),transparent 45%),
+    linear-gradient(150deg,var(--encre),#0A1E4A 60%,#123B24);
+  border:1px solid rgba(252,209,22,.25);
+  display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center;
+}
+.comm-box h2{margin-bottom:12px}
+.comm-box h2 .cm{color:var(--etoile)}
+.comm-actions{display:flex;flex-direction:column;gap:13px}
+.btn-wa{background:#1EBE5D;color:#fff;box-shadow:0 10px 26px rgba(30,190,93,.3);justify-content:center}
+.btn-wa:hover{transform:translateY(-2px)}
+.btn-form{background:rgba(252,209,22,.14);color:var(--etoile);border:1px solid rgba(252,209,22,.4);justify-content:center}
+.btn-form:hover{background:rgba(252,209,22,.22)}
+
+/* ---------- FOOTER ---------- */
+footer{
+  border-top:1px solid var(--ligne);
+  padding:34px clamp(20px,5vw,64px);
+  display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+  max-width:1240px;margin:0 auto;
+}
+footer p{font-size:13px;color:var(--brume)}
+footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
+
+/* ---------- REVEAL ANIMATION ---------- */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;text-align:center}
+  .hero-sub{margin-inline:auto}
+  .hero-ctas,.hero-meta{justify-content:center}
+  .eyebrow{justify-content:center}
+  .mock-wrap{min-height:480px;margin-top:10px}
+  .chip-a{left:2%}.chip-b{right:2%}
+  .comm-box{grid-template-columns:1fr;text-align:center}
+  .nav-links a:not(.btn){display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">
+    <span class="logo-badge">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F4F7FF" stroke-width="1.6"/><path d="M3.5 12h17M12 3.5c2.6 2.3 3.9 5.2 3.9 8.5S14.6 18.2 12 20.5C9.4 18.2 8.1 15.3 8.1 12S9.4 5.8 12 3.5Z" stroke="#F4F7FF" stroke-width="1.3"/></svg>
+    </span>
+    <span class="logo-name">Globe<em>Trotter</em> Yaoundé</span>
+  </a>
+  <div class="nav-links">
+    <a href="#telecharger">Télécharger</a>
+    <a href="#fonctionnalites">Fonctionnalités</a>
+    <a href="#communaute">Communauté</a>
+    <a class="btn btn-orange btn-sm" href="./app/">Ouvrir l'app Web →</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div>
+    <span class="eyebrow reveal">Assistant de voyage · Cameroun 🇨🇲</span>
+    <h1 class="reveal">Découvrez <span class="ville">Yaoundé</span> comme jamais <span class="accent">auparavant.</span></h1>
+    <p class="hero-sub reveal">Recommandations personnalisées, sorties planifiées entre amis, prix en FCFA et pépites cachées de la ville aux sept collines. <strong>Sur votre téléphone, votre navigateur et votre PC.</strong></p>
+    <div class="hero-ctas reveal">
+      <a class="btn btn-orange" href="#telecharger">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Télécharger l'app
+      </a>
+      <a class="btn btn-ghost" href="./app/">Essayer la version Web</a>
+    </div>
+    <div class="hero-meta reveal">
+      <div class="meta-item"><b>26+</b><span>lieux référencés</span></div>
+      <div class="meta-item"><b>8</b><span>catégories</span></div>
+      <div class="meta-item"><b>3</b><span>plateformes</span></div>
+    </div>
+  </div>
+
+  <!-- Phone mockup: real app content, built in CSS -->
+  <div class="mock-wrap reveal">
+    <div class="chip-float chip-a"><span class="dot" style="background:#F97316"></span>Mont Fébé · 1 000 FCFA</div>
+    <div class="chip-float chip-b"><span class="dot" style="background:#FCD116"></span>⭐ Reco pour vous</div>
+    <div class="chip-float chip-c"><span class="dot" style="background:#4FA3F7"></span>Bastos · Sorties</div>
+    <div class="phone">
+      <div class="phone-notch"><i></i></div>
+      <div class="app-head">
+        <div class="app-hello">Bonjour, Explorateur ! <span>👋</span></div>
+        <div class="app-sub">Où sortons-nous aujourd'hui ?</div>
+      </div>
+      <div class="app-search">🔍 Rechercher un lieu, un quartier…</div>
+      <div class="app-cats">
+        <span class="app-cat on">Tout</span>
+        <span class="app-cat">🍽️ Restaurants</span>
+        <span class="app-cat">🌳 Nature</span>
+        <span class="app-cat">🏛️ Musées</span>
+      </div>
+      <div class="app-card">
+        <div class="app-img febe"><span class="pill">🌳 Nature</span></div>
+        <div class="app-body">
+          <div class="app-row"><span class="app-name">Mont Fébé — Belvédère</span><span class="app-price">1 000 FCFA</span></div>
+          <div class="app-loc">📍 Fébé · 16h – 18h30</div>
+          <div class="app-reason">✨ Correspond à vos intérêts : nature, photo</div>
+        </div>
+      </div>
+      <div class="app-card">
+        <div class="app-img marche"><span class="pill">🛍️ Marché</span></div>
+        <div class="app-body">
+          <div class="app-row"><span class="app-name">Marché Central</span><span class="app-price">5 000 FCFA</span></div>
+          <div class="app-loc">📍 Centre-ville · Matin en semaine</div>
+        </div>
+      </div>
+      <div class="app-tabbar">
+        <span class="app-tab on"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="m15 9-2 5-4 1 2-5 4-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Explorer</span>
+        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 2.6 5.6L20 9.4l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.8L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Pour vous</span>
+        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><path d="M9 20H4V8l5-4 5 4 6-2v12l-6 2-5-2v2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Sorties</span>
+        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Profil</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= DOWNLOAD HUB ================= -->
+<section id="telecharger">
+  <span class="eyebrow reveal">Téléchargements</span>
+  <h2 class="reveal">Une app. Trois façons de l'emporter.</h2>
+  <p class="sec-sub reveal">Le même GlobeTrotter Yaoundé partout : installez-le sur Android, gardez-le sur votre PC, ou utilisez-le directement dans le navigateur sans rien installer.</p>
+  <div class="detect-note reveal" id="detectNote" hidden>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3.5v.01M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    Appareil détecté : <b id="detectOS"></b> — nous avons mis en avant la version qu'il vous faut.
+  </div>
+
+  <div class="dl-grid">
+    <!-- ANDROID -->
+    <article class="dl-card reveal" id="card-android">
+      <div class="dl-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 9h10v9a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9Z" stroke="#4FA3F7" stroke-width="1.8"/><path d="M8 6.5 6.5 4M16 6.5 17.5 4M7 9a5 5 0 0 1 10 0" stroke="#4FA3F7" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="7.4" r=".9" fill="#4FA3F7"/><circle cx="14" cy="7.4" r=".9" fill="#4FA3F7"/></svg></div>
+      <h3>Android</h3>
+      <p>Installez l'APK directement — parfait pour la beta WhatsApp. Autorisez « Sources inconnues » lors de l'installation.</p>
+      <span class="dl-file"><i></i>globetrotter-yaounde.apk · Android 6.0+</span>
+      <a class="btn btn-orange" href="./downloads/globetrotter-yaounde.apk" download>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Télécharger l'APK
+      </a>
+    </article>
+
+    <!-- WEB -->
+    <article class="dl-card reveal" id="card-web">
+      <div class="dl-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4FA3F7" stroke-width="1.8"/><path d="M3 12h18M12 3c2.7 2.4 4 5.4 4 9s-1.3 6.6-4 9c-2.7-2.4-4-5.4-4-9s1.3-6.6 4-9Z" stroke="#4FA3F7" stroke-width="1.6"/></svg></div>
+      <h3>Web</h3>
+      <p>Zéro installation : l'application complète tourne dans votre navigateur, sur téléphone comme sur ordinateur.</p>
+      <span class="dl-file"><i></i>Chrome, Edge, Firefox, Safari</span>
+      <a class="btn btn-orange" href="./app/">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M13 5h6v6M19 5l-8 8M11 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Ouvrir l'app Web
+      </a>
+    </article>
+
+    <!-- WINDOWS -->
+    <article class="dl-card reveal" id="card-windows">
+      <div class="dl-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5 11 4v7.5H4V5.5ZM12.5 3.8 20 2.5v9h-7.5V3.8ZM4 12.5h7V20l-7-1.5v-6ZM12.5 12.5H20v9l-7.5-1.3v-7.7Z" stroke="#4FA3F7" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      <h3>Windows</h3>
+      <p>La version bureau : décompressez le dossier et lancez globetrotter.exe. Aucune installation requise.</p>
+      <span class="dl-file"><i></i>globetrotter-yaounde-windows.zip · Win 10/11</span>
+      <a class="btn btn-orange" href="./downloads/globetrotter-yaounde-windows.zip" download>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Télécharger pour Windows
+      </a>
+    </article>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section id="fonctionnalites">
+  <span class="eyebrow reveal">Fonctionnalités</span>
+  <h2 class="reveal">Tout ce que fait l'app — sur les trois plateformes.</h2>
+  <p class="sec-sub reveal">Un seul compte, les mêmes données partout : commencez une sortie sur votre téléphone, terminez-la sur votre PC.</p>
+  <div class="feat-grid">
+    <div class="feat reveal">
+      <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 2.6 5.6L20 9.4l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.8L12 3Z" stroke="#F97316" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+      <h3>Recommandations personnalisées</h3>
+      <p>L'algorithme croise vos centres d'intérêt, vos sorties passées et les lieux préférés des Yaoundéens — et vous explique pourquoi.</p>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M9 20H4V8l5-4 5 4 6-2v12l-6 2-5-2v2Z" stroke="#F97316" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+      <h3>Sorties planifiées</h3>
+      <p>Composez vos itinéraires jour par jour : Mont Fébé le samedi, Méfou le dimanche, avec vos notes personnelles.</p>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" stroke="#F97316" stroke-width="1.8"/><circle cx="17" cy="16" r="3" stroke="#F97316" stroke-width="1.8"/><path d="M10.5 9.5 15 14" stroke="#F97316" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <h3>Partage famille & amis</h3>
+      <p>Invitez vos proches sur vos sorties par email : tout le monde voit le programme.</p>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11Z" stroke="#F97316" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="#F97316" stroke-width="1.8"/></svg></div>
+      <h3>26+ lieux, 8 catégories</h3>
+      <p>Attractions, musées, nature, marchés, restaurants, cafés, hôtels et sorties — du Monument à la Briqueterie.</p>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2.5" stroke="#F97316" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" stroke="#F97316" stroke-width="1.8"/></svg></div>
+      <h3>Prix réels en FCFA</h3>
+      <p>Budget moyen et meilleur moment de visite pour chaque lieu — fini les mauvaises surprises.</p>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="7" y="2.5" width="10" height="19" rx="2.5" stroke="#F97316" stroke-width="1.8"/><rect x="2.5" y="6" width="8" height="13" rx="2" stroke="#F97316" stroke-width="1.8" fill="#061230"/><path d="M14 21.5h4a3 3 0 0 0 3-3V9" stroke="#F97316" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <h3>Mobile · Web · Desktop</h3>
+      <p>Un seul code, trois plateformes : votre compte et vos sorties vous suivent partout.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMMUNITY ================= -->
+<section id="communaute">
+  <div class="comm-box reveal">
+    <div>
+      <span class="eyebrow">Programme beta</span>
+      <h2>Construisez l'app avec nous, <span class="cm">Yaoundé.</span></h2>
+      <p class="sec-sub" style="margin-bottom:0">Testez les nouveautés en avant-première, signalez les bugs, votez pour les prochaines fonctionnalités — et même pour l'icône de l'app. Vos retours décident de la suite.</p>
+    </div>
+    <div class="comm-actions">
+      <a class="btn btn-wa" href="https://chat.whatsapp.com/KaUMkKoAVGHEdwzuqg6bkp" target="_blank" rel="noopener">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 8.8c.4 2.6 3.6 5.8 6.2 6.2l1.2-1.6-2.2-1.1-1 .7c-.9-.4-1.8-1.3-2.2-2.2l.7-1-1.1-2.2L9 8.8Z" fill="#fff"/></svg>
+        Rejoindre la communauté WhatsApp
+      </a>
+      <!-- REMPLACE # par le lien de ton Google Form -->
+      <a class="btn btn-form" href="#" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 3h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 12h6M9.5 15.5h6M9.5 8.5H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        S'inscrire au programme beta
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><strong style="color:var(--craie)">GlobeTrotter Yaoundé</strong> — projet capstone CS 4122, Distributed Systems · The ICT University</p>
+  <p class="mono">Phase 1 · Monolith v1.0 · Fait avec ❤️ à Yaoundé 🇨🇲</p>
+</footer>
+
+<script>
+// --- OS detection: highlight the right download card ---
+(function(){
+  var ua = navigator.userAgent;
+  var os = null, cardId = null;
+  if (/Android/i.test(ua)) { os = "Android"; cardId = "card-android"; }
+  else if (/Windows/i.test(ua)) { os = "Windows"; cardId = "card-windows"; }
+  else if (/iPhone|iPad|Macintosh|Linux/i.test(ua)) { os = "votre navigateur"; cardId = "card-web"; }
+  if (cardId) {
+    document.getElementById(cardId).classList.add("reco");
+    var note = document.getElementById("detectNote");
+    document.getElementById("detectOS").textContent = os;
+    note.hidden = false;
+  }
+})();
+
+// --- Scroll reveal ---
+(function(){
+  var els = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) { els.forEach(function(e){e.classList.add("in")}); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+  }, {threshold:.12});
+  els.forEach(function(e){ io.observe(e); });
+})();
+</script>
+</body>
+</html>
