@@ -1,0 +1,11 @@
+Place ici tes fichiers de distribution :
+
+1. globetrotter-yaounde.apk
+   -> genere avec : flutter build apk --release
+   -> fichier : build\app\outputs\flutter-apk\app-release.apk (renomme-le)
+
+2. globetrotter-yaounde-windows.zip
+   -> genere avec : flutter build windows --release
+   -> zippe TOUT le dossier build\windows\x64\runner\Release\ (l'exe + les DLL)
+
+Les boutons de la page pointent deja vers ces deux noms de fichiers exacts.
