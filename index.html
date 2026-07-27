@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GlobeTrotter Yaoundé — Découvrez Yaoundé autrement</title>
-<meta name="description" content="L'assistant de voyage intelligent pour Yaoundé : recommandations personnalisées, itinéraires de sorties, prix en FCFA. Disponible sur Android, Web et Windows.">
+<title data-fr="GlobeTrotter Yaoundé — Découvrez Yaoundé autrement" data-en="GlobeTrotter Yaoundé — Discover Yaoundé like never before">GlobeTrotter Yaoundé — Découvrez Yaoundé autrement</title>
+<meta name="description" id="metaDesc" data-fr="L'assistant de voyage intelligent pour Yaoundé : recommandations personnalisées, itinéraires de sorties, prix en FCFA. Disponible sur Android, Web et Windows." data-en="The smart travel assistant for Yaoundé: personalized recommendations, outing itineraries, prices in FCFA. Available on Android, Web and Windows." content="L'assistant de voyage intelligent pour Yaoundé : recommandations personnalisées, itinéraires de sorties, prix en FCFA. Disponible sur Android, Web et Windows.">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16.png">
 <link rel="icon" href="./assets/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
 <meta name="theme-color" content="#061230">
-<meta property="og:title" content="GlobeTrotter Yaoundé — Découvrez Yaoundé autrement">
-<meta property="og:description" content="Recommandations personnalisées, sorties planifiées, prix en FCFA. Sur Android, Web et Windows.">
+<meta property="og:title" id="ogTitle" data-fr="GlobeTrotter Yaoundé — Découvrez Yaoundé autrement" data-en="GlobeTrotter Yaoundé — Discover Yaoundé like never before" content="GlobeTrotter Yaoundé — Découvrez Yaoundé autrement">
+<meta property="og:description" id="ogDesc" data-fr="Recommandations personnalisées, sorties planifiées, prix en FCFA. Sur Android, Web et Windows." data-en="Personalized recommendations, planned outings, prices in FCFA. On Android, Web and Windows." content="Recommandations personnalisées, sorties planifiées, prix en FCFA. Sur Android, Web et Windows.">
 <meta property="og:image" content="./assets/icon-512.png">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,6 +91,17 @@ nav{
 }
 .btn-ghost:hover{background:rgba(79,163,247,.18)}
 .btn-sm{padding:9px 16px;font-size:13.5px;border-radius:11px}
+.lang-switch{
+  display:flex;align-items:center;background:rgba(79,163,247,.10);
+  border:1px solid var(--ligne);border-radius:20px;padding:3px;gap:2px;
+}
+.lang-btn{
+  border:none;background:transparent;color:var(--brume);
+  font-family:'Outfit';font-weight:700;font-size:12.5px;
+  padding:6px 12px;border-radius:16px;cursor:pointer;transition:background .18s,color .18s;
+}
+.lang-btn.active{background:var(--mandarine);color:#fff}
+.lang-btn:focus-visible{outline:2px solid var(--ciel);outline-offset:1px}
 
 /* ---------- HERO ---------- */
 .hero{
@@ -251,13 +262,14 @@ h2{
   border-color:var(--mandarine);
   box-shadow:0 18px 50px rgba(249,115,22,.22);
 }
-.dl-card.reco::before{
-  content:"Recommandé pour votre appareil";
+.reco-badge{
+  display:none;
   position:absolute;top:-13px;left:24px;
   background:linear-gradient(120deg,#FB923C,var(--braise));
   color:#fff;font-size:11px;font-weight:700;
   padding:5px 13px;border-radius:16px;letter-spacing:.3px;
 }
+.dl-card.reco .reco-badge{display:inline-block}
 .dl-icon{
   width:54px;height:54px;border-radius:16px;
   display:grid;place-items:center;
@@ -352,71 +364,75 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
     <span class="logo-name">Globe<em>Trotter</em> Yaoundé</span>
   </a>
   <div class="nav-links">
-    <a href="#telecharger">Télécharger</a>
-    <a href="#fonctionnalites">Fonctionnalités</a>
-    <a href="#communaute">Communauté</a>
-    <a class="btn btn-orange btn-sm" href="./app/">Ouvrir l'app Web →</a>
+    <a href="#telecharger" data-fr="Télécharger" data-en="Download">Télécharger</a>
+    <a href="#fonctionnalites" data-fr="Fonctionnalités" data-en="Features">Fonctionnalités</a>
+    <a href="#communaute" data-fr="Communauté" data-en="Community">Communauté</a>
+    <a class="btn btn-orange btn-sm" href="./app/" data-fr="Ouvrir l'app Web →" data-en="Open Web app →">Ouvrir l'app Web →</a>
+    <div class="lang-switch" role="group" aria-label="Langue / Language">
+      <button type="button" class="lang-btn active" data-lang-btn="fr">FR</button>
+      <button type="button" class="lang-btn" data-lang-btn="en">EN</button>
+    </div>
   </div>
 </nav>
 
 <!-- ================= HERO ================= -->
 <header class="hero">
   <div>
-    <span class="eyebrow reveal">Assistant de voyage · Cameroun 🇨🇲</span>
-    <h1 class="reveal">Découvrez <span class="ville">Yaoundé</span> comme jamais <span class="accent">auparavant.</span></h1>
-    <p class="hero-sub reveal">Recommandations personnalisées, sorties planifiées entre amis, prix en FCFA et pépites cachées de la ville aux sept collines. <strong>Sur votre téléphone, votre navigateur et votre PC.</strong></p>
+    <span class="eyebrow reveal" data-fr="Assistant de voyage · Cameroun 🇨🇲" data-en="Travel assistant · Cameroon 🇨🇲">Assistant de voyage · Cameroun 🇨🇲</span>
+    <h1 class="reveal" data-fr='Découvrez <span class="ville">Yaoundé</span> comme jamais <span class="accent">auparavant.</span>' data-en='Discover <span class="ville">Yaoundé</span> like never <span class="accent">before.</span>'>Découvrez <span class="ville">Yaoundé</span> comme jamais <span class="accent">auparavant.</span></h1>
+    <p class="hero-sub reveal" data-fr="Recommandations personnalisées, sorties planifiées entre amis, prix en FCFA et pépites cachées de la ville aux sept collines. <strong>Sur votre téléphone, votre navigateur et votre PC.</strong>" data-en="Personalized recommendations, outings planned with friends, prices in FCFA, and hidden gems of the city of seven hills. <strong>On your phone, your browser, and your PC.</strong>">Recommandations personnalisées, sorties planifiées entre amis, prix en FCFA et pépites cachées de la ville aux sept collines. <strong>Sur votre téléphone, votre navigateur et votre PC.</strong></p>
     <div class="hero-ctas reveal">
       <a class="btn btn-orange" href="#telecharger">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Télécharger l'app
+        <span data-fr="Télécharger l'app" data-en="Download the app">Télécharger l'app</span>
       </a>
-      <a class="btn btn-ghost" href="./app/">Essayer la version Web</a>
+      <a class="btn btn-ghost" href="./app/" data-fr="Essayer la version Web" data-en="Try the Web version">Essayer la version Web</a>
     </div>
     <div class="hero-meta reveal">
-      <div class="meta-item"><b>26+</b><span>lieux référencés</span></div>
-      <div class="meta-item"><b>8</b><span>catégories</span></div>
-      <div class="meta-item"><b>3</b><span>plateformes</span></div>
+      <div class="meta-item"><b>26+</b><span data-fr="lieux référencés" data-en="listed places">lieux référencés</span></div>
+      <div class="meta-item"><b>8</b><span data-fr="catégories" data-en="categories">catégories</span></div>
+      <div class="meta-item"><b>3</b><span data-fr="plateformes" data-en="platforms">plateformes</span></div>
     </div>
   </div>
 
   <!-- Phone mockup: real app content, built in CSS -->
   <div class="mock-wrap reveal">
-    <div class="chip-float chip-a"><span class="dot" style="background:#F97316"></span>Mont Fébé · 1 000 FCFA</div>
-    <div class="chip-float chip-b"><span class="dot" style="background:#FCD116"></span>⭐ Reco pour vous</div>
-    <div class="chip-float chip-c"><span class="dot" style="background:#4FA3F7"></span>Bastos · Sorties</div>
+    <div class="chip-float chip-a"><span class="dot" style="background:#F97316"></span><span data-fr="Mont Fébé · 1 000 FCFA" data-en="Mont Fébé · 1,000 FCFA">Mont Fébé · 1 000 FCFA</span></div>
+    <div class="chip-float chip-b"><span class="dot" style="background:#FCD116"></span><span data-fr="⭐ Reco pour vous" data-en="⭐ Recommended for you">⭐ Reco pour vous</span></div>
+    <div class="chip-float chip-c"><span class="dot" style="background:#4FA3F7"></span><span data-fr="Bastos · Sorties" data-en="Bastos · Outings">Bastos · Sorties</span></div>
     <div class="phone">
       <div class="phone-notch"><i></i></div>
       <div class="app-head">
-        <div class="app-hello">Bonjour, Explorateur ! <span>👋</span></div>
-        <div class="app-sub">Où sortons-nous aujourd'hui ?</div>
+        <div class="app-hello" data-fr="Bonjour, Explorateur ! <span>👋</span>" data-en="Hello, Explorer! <span>👋</span>">Bonjour, Explorateur ! <span>👋</span></div>
+        <div class="app-sub" data-fr="Où sortons-nous aujourd'hui ?" data-en="Where are we heading today?">Où sortons-nous aujourd'hui ?</div>
       </div>
-      <div class="app-search">🔍 Rechercher un lieu, un quartier…</div>
+      <div class="app-search" data-fr="🔍 Rechercher un lieu, un quartier…" data-en="🔍 Search a place, a neighborhood…">🔍 Rechercher un lieu, un quartier…</div>
       <div class="app-cats">
-        <span class="app-cat on">Tout</span>
-        <span class="app-cat">🍽️ Restaurants</span>
-        <span class="app-cat">🌳 Nature</span>
-        <span class="app-cat">🏛️ Musées</span>
+        <span class="app-cat on" data-fr="Tout" data-en="All">Tout</span>
+        <span class="app-cat" data-fr="🍽️ Restaurants" data-en="🍽️ Restaurants">🍽️ Restaurants</span>
+        <span class="app-cat" data-fr="🌳 Nature" data-en="🌳 Nature">🌳 Nature</span>
+        <span class="app-cat" data-fr="🏛️ Musées" data-en="🏛️ Museums">🏛️ Musées</span>
       </div>
       <div class="app-card">
-        <div class="app-img febe"><span class="pill">🌳 Nature</span></div>
+        <div class="app-img febe"><span class="pill" data-fr="🌳 Nature" data-en="🌳 Nature">🌳 Nature</span></div>
         <div class="app-body">
-          <div class="app-row"><span class="app-name">Mont Fébé — Belvédère</span><span class="app-price">1 000 FCFA</span></div>
-          <div class="app-loc">📍 Fébé · 16h – 18h30</div>
-          <div class="app-reason">✨ Correspond à vos intérêts : nature, photo</div>
+          <div class="app-row"><span class="app-name" data-fr="Mont Fébé — Belvédère" data-en="Mont Fébé — Lookout">Mont Fébé — Belvédère</span><span class="app-price" data-fr="1 000 FCFA" data-en="1,000 FCFA">1 000 FCFA</span></div>
+          <div class="app-loc" data-fr="📍 Fébé · 16h – 18h30" data-en="📍 Fébé · 4pm – 6:30pm">📍 Fébé · 16h – 18h30</div>
+          <div class="app-reason" data-fr="✨ Correspond à vos intérêts : nature, photo" data-en="✨ Matches your interests: nature, photography">✨ Correspond à vos intérêts : nature, photo</div>
         </div>
       </div>
       <div class="app-card">
-        <div class="app-img marche"><span class="pill">🛍️ Marché</span></div>
+        <div class="app-img marche"><span class="pill" data-fr="🛍️ Marché" data-en="🛍️ Market">🛍️ Marché</span></div>
         <div class="app-body">
-          <div class="app-row"><span class="app-name">Marché Central</span><span class="app-price">5 000 FCFA</span></div>
-          <div class="app-loc">📍 Centre-ville · Matin en semaine</div>
+          <div class="app-row"><span class="app-name" data-fr="Marché Central" data-en="Central Market">Marché Central</span><span class="app-price" data-fr="5 000 FCFA" data-en="5,000 FCFA">5 000 FCFA</span></div>
+          <div class="app-loc" data-fr="📍 Centre-ville · Matin en semaine" data-en="📍 Downtown · Weekday mornings">📍 Centre-ville · Matin en semaine</div>
         </div>
       </div>
       <div class="app-tabbar">
-        <span class="app-tab on"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="m15 9-2 5-4 1 2-5 4-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Explorer</span>
-        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 2.6 5.6L20 9.4l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.8L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Pour vous</span>
-        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><path d="M9 20H4V8l5-4 5 4 6-2v12l-6 2-5-2v2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Sorties</span>
-        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Profil</span>
+        <span class="app-tab on"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="m15 9-2 5-4 1 2-5 4-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span data-fr="Explorer" data-en="Explore">Explorer</span></span>
+        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 2.6 5.6L20 9.4l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.8L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-fr="Pour vous" data-en="For you">Pour vous</span></span>
+        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><path d="M9 20H4V8l5-4 5 4 6-2v12l-6 2-5-2v2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-fr="Sorties" data-en="Outings">Sorties</span></span>
+        <span class="app-tab"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-fr="Profil" data-en="Profile">Profil</span></span>
       </div>
     </div>
   </div>
@@ -424,48 +440,51 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
 
 <!-- ================= DOWNLOAD HUB ================= -->
 <section id="telecharger">
-  <span class="eyebrow reveal">Téléchargements</span>
-  <h2 class="reveal">Une app. Trois façons de l'emporter.</h2>
-  <p class="sec-sub reveal">Le même GlobeTrotter Yaoundé partout : installez-le sur Android, gardez-le sur votre PC, ou utilisez-le directement dans le navigateur sans rien installer.</p>
+  <span class="eyebrow reveal" data-fr="Téléchargements" data-en="Downloads">Téléchargements</span>
+  <h2 class="reveal" data-fr="Une app. Trois façons de l'emporter." data-en="One app. Three ways to take it with you.">Une app. Trois façons de l'emporter.</h2>
+  <p class="sec-sub reveal" data-fr="Le même GlobeTrotter Yaoundé partout : installez-le sur Android, gardez-le sur votre PC, ou utilisez-le directement dans le navigateur sans rien installer." data-en="The same GlobeTrotter Yaoundé everywhere: install it on Android, keep it on your PC, or use it straight from the browser with nothing to install.">Le même GlobeTrotter Yaoundé partout : installez-le sur Android, gardez-le sur votre PC, ou utilisez-le directement dans le navigateur sans rien installer.</p>
   <div class="detect-note reveal" id="detectNote" hidden>
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3.5v.01M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    Appareil détecté : <b id="detectOS"></b> — nous avons mis en avant la version qu'il vous faut.
+    <span id="detectPrefix" data-fr="Appareil détecté :" data-en="Device detected:">Appareil détecté :</span> <b id="detectOS"></b> — <span id="detectSuffix" data-fr="nous avons mis en avant la version qu'il vous faut." data-en="we've highlighted the version you need.">nous avons mis en avant la version qu'il vous faut.</span>
   </div>
 
   <div class="dl-grid">
     <!-- ANDROID -->
     <article class="dl-card reveal" id="card-android">
+      <span class="reco-badge" data-fr="Recommandé pour votre appareil" data-en="Recommended for your device">Recommandé pour votre appareil</span>
       <div class="dl-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 9h10v9a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9Z" stroke="#4FA3F7" stroke-width="1.8"/><path d="M8 6.5 6.5 4M16 6.5 17.5 4M7 9a5 5 0 0 1 10 0" stroke="#4FA3F7" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="7.4" r=".9" fill="#4FA3F7"/><circle cx="14" cy="7.4" r=".9" fill="#4FA3F7"/></svg></div>
       <h3>Android</h3>
-      <p>Installez l'APK directement — parfait pour la beta WhatsApp. Autorisez « Sources inconnues » lors de l'installation.</p>
+      <p data-fr="Installez l'APK directement — parfait pour la beta WhatsApp. Autorisez « Sources inconnues » lors de l'installation." data-en="Install the APK directly — perfect for the WhatsApp beta. Allow &quot;Unknown sources&quot; during installation.">Installez l'APK directement — parfait pour la beta WhatsApp. Autorisez « Sources inconnues » lors de l'installation.</p>
       <span class="dl-file"><i></i>globetrotter-yaounde.apk · Android 6.0+</span>
       <a class="btn btn-orange" href="./downloads/globetrotter-yaounde.apk" download>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Télécharger l'APK
+        <span data-fr="Télécharger l'APK" data-en="Download the APK">Télécharger l'APK</span>
       </a>
     </article>
 
     <!-- WEB -->
     <article class="dl-card reveal" id="card-web">
+      <span class="reco-badge" data-fr="Recommandé pour votre appareil" data-en="Recommended for your device">Recommandé pour votre appareil</span>
       <div class="dl-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#4FA3F7" stroke-width="1.8"/><path d="M3 12h18M12 3c2.7 2.4 4 5.4 4 9s-1.3 6.6-4 9c-2.7-2.4-4-5.4-4-9s1.3-6.6 4-9Z" stroke="#4FA3F7" stroke-width="1.6"/></svg></div>
       <h3>Web</h3>
-      <p>Zéro installation : l'application complète tourne dans votre navigateur, sur téléphone comme sur ordinateur.</p>
+      <p data-fr="Zéro installation : l'application complète tourne dans votre navigateur, sur téléphone comme sur ordinateur." data-en="Zero installation: the full app runs right in your browser, on phone or computer.">Zéro installation : l'application complète tourne dans votre navigateur, sur téléphone comme sur ordinateur.</p>
       <span class="dl-file"><i></i>Chrome, Edge, Firefox, Safari</span>
       <a class="btn btn-orange" href="./app/">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M13 5h6v6M19 5l-8 8M11 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Ouvrir l'app Web
+        <span data-fr="Ouvrir l'app Web" data-en="Open the Web app">Ouvrir l'app Web</span>
       </a>
     </article>
 
     <!-- WINDOWS -->
     <article class="dl-card reveal" id="card-windows">
+      <span class="reco-badge" data-fr="Recommandé pour votre appareil" data-en="Recommended for your device">Recommandé pour votre appareil</span>
       <div class="dl-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5 11 4v7.5H4V5.5ZM12.5 3.8 20 2.5v9h-7.5V3.8ZM4 12.5h7V20l-7-1.5v-6ZM12.5 12.5H20v9l-7.5-1.3v-7.7Z" stroke="#4FA3F7" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
       <h3>Windows</h3>
-      <p>La version bureau : décompressez le dossier et lancez globetrotter.exe. Aucune installation requise.</p>
+      <p data-fr="La version bureau : décompressez le dossier et lancez globetrotter.exe. Aucune installation requise." data-en="The desktop version: unzip the folder and launch globetrotter.exe. No installation required.">La version bureau : décompressez le dossier et lancez globetrotter.exe. Aucune installation requise.</p>
       <span class="dl-file"><i></i>globetrotter-yaounde-windows.zip · Win 10/11</span>
       <a class="btn btn-orange" href="./downloads/globetrotter-yaounde-windows.zip" download>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Télécharger pour Windows
+        <span data-fr="Télécharger pour Windows" data-en="Download for Windows">Télécharger pour Windows</span>
       </a>
     </article>
   </div>
@@ -473,39 +492,39 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
 
 <!-- ================= FEATURES ================= -->
 <section id="fonctionnalites">
-  <span class="eyebrow reveal">Fonctionnalités</span>
-  <h2 class="reveal">Tout ce que fait l'app — sur les trois plateformes.</h2>
-  <p class="sec-sub reveal">Un seul compte, les mêmes données partout : commencez une sortie sur votre téléphone, terminez-la sur votre PC.</p>
+  <span class="eyebrow reveal" data-fr="Fonctionnalités" data-en="Features">Fonctionnalités</span>
+  <h2 class="reveal" data-fr="Tout ce que fait l'app — sur les trois plateformes." data-en="Everything the app does — on all three platforms.">Tout ce que fait l'app — sur les trois plateformes.</h2>
+  <p class="sec-sub reveal" data-fr="Un seul compte, les mêmes données partout : commencez une sortie sur votre téléphone, terminez-la sur votre PC." data-en="One account, the same data everywhere: start planning an outing on your phone, finish it on your PC.">Un seul compte, les mêmes données partout : commencez une sortie sur votre téléphone, terminez-la sur votre PC.</p>
   <div class="feat-grid">
     <div class="feat reveal">
       <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 2.6 5.6L20 9.4l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.8L12 3Z" stroke="#F97316" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
-      <h3>Recommandations personnalisées</h3>
-      <p>L'algorithme croise vos centres d'intérêt, vos sorties passées et les lieux préférés des Yaoundéens — et vous explique pourquoi.</p>
+      <h3 data-fr="Recommandations personnalisées" data-en="Personalized recommendations">Recommandations personnalisées</h3>
+      <p data-fr="L'algorithme croise vos centres d'intérêt, vos sorties passées et les lieux préférés des Yaoundéens — et vous explique pourquoi." data-en="The algorithm combines your interests, your past outings, and the places Yaoundé locals love most — and tells you why.">L'algorithme croise vos centres d'intérêt, vos sorties passées et les lieux préférés des Yaoundéens — et vous explique pourquoi.</p>
     </div>
     <div class="feat reveal">
       <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M9 20H4V8l5-4 5 4 6-2v12l-6 2-5-2v2Z" stroke="#F97316" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
-      <h3>Sorties planifiées</h3>
-      <p>Composez vos itinéraires jour par jour : Mont Fébé le samedi, Méfou le dimanche, avec vos notes personnelles.</p>
+      <h3 data-fr="Sorties planifiées" data-en="Planned outings">Sorties planifiées</h3>
+      <p data-fr="Composez vos itinéraires jour par jour : Mont Fébé le samedi, Méfou le dimanche, avec vos notes personnelles." data-en="Build your itineraries day by day: Mont Fébé on Saturday, Méfou on Sunday, with your own notes.">Composez vos itinéraires jour par jour : Mont Fébé le samedi, Méfou le dimanche, avec vos notes personnelles.</p>
     </div>
     <div class="feat reveal">
       <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" stroke="#F97316" stroke-width="1.8"/><circle cx="17" cy="16" r="3" stroke="#F97316" stroke-width="1.8"/><path d="M10.5 9.5 15 14" stroke="#F97316" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-      <h3>Partage famille & amis</h3>
-      <p>Invitez vos proches sur vos sorties par email : tout le monde voit le programme.</p>
+      <h3 data-fr="Partage famille &amp; amis" data-en="Share with family &amp; friends">Partage famille & amis</h3>
+      <p data-fr="Invitez vos proches sur vos sorties par email : tout le monde voit le programme." data-en="Invite your loved ones to your outings by email: everyone sees the plan.">Invitez vos proches sur vos sorties par email : tout le monde voit le programme.</p>
     </div>
     <div class="feat reveal">
       <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11Z" stroke="#F97316" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="#F97316" stroke-width="1.8"/></svg></div>
-      <h3>26+ lieux, 8 catégories</h3>
-      <p>Attractions, musées, nature, marchés, restaurants, cafés, hôtels et sorties — du Monument à la Briqueterie.</p>
+      <h3 data-fr="26+ lieux, 8 catégories" data-en="26+ places, 8 categories">26+ lieux, 8 catégories</h3>
+      <p data-fr="Attractions, musées, nature, marchés, restaurants, cafés, hôtels et sorties — du Monument à la Briqueterie." data-en="Attractions, museums, nature, markets, restaurants, cafés, hotels and outings — from the Monument to Briqueterie.">Attractions, musées, nature, marchés, restaurants, cafés, hôtels et sorties — du Monument à la Briqueterie.</p>
     </div>
     <div class="feat reveal">
       <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2.5" stroke="#F97316" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" stroke="#F97316" stroke-width="1.8"/></svg></div>
-      <h3>Prix réels en FCFA</h3>
-      <p>Budget moyen et meilleur moment de visite pour chaque lieu — fini les mauvaises surprises.</p>
+      <h3 data-fr="Prix réels en FCFA" data-en="Real prices in FCFA">Prix réels en FCFA</h3>
+      <p data-fr="Budget moyen et meilleur moment de visite pour chaque lieu — fini les mauvaises surprises." data-en="Average budget and best time to visit for each place — no more bad surprises.">Budget moyen et meilleur moment de visite pour chaque lieu — fini les mauvaises surprises.</p>
     </div>
     <div class="feat reveal">
       <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="7" y="2.5" width="10" height="19" rx="2.5" stroke="#F97316" stroke-width="1.8"/><rect x="2.5" y="6" width="8" height="13" rx="2" stroke="#F97316" stroke-width="1.8" fill="#061230"/><path d="M14 21.5h4a3 3 0 0 0 3-3V9" stroke="#F97316" stroke-width="1.8" stroke-linecap="round"/></svg></div>
       <h3>Mobile · Web · Desktop</h3>
-      <p>Un seul code, trois plateformes : votre compte et vos sorties vous suivent partout.</p>
+      <p data-fr="Un seul code, trois plateformes : votre compte et vos sorties vous suivent partout." data-en="One codebase, three platforms: your account and outings follow you everywhere.">Un seul code, trois plateformes : votre compte et vos sorties vous suivent partout.</p>
     </div>
   </div>
 </section>
@@ -514,41 +533,42 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
 <section id="communaute">
   <div class="comm-box reveal">
     <div>
-      <span class="eyebrow">Programme beta</span>
-      <h2>Construisez l'app avec nous, <span class="cm">Yaoundé.</span></h2>
-      <p class="sec-sub" style="margin-bottom:0">Testez les nouveautés en avant-première, signalez les bugs, votez pour les prochaines fonctionnalités — et même pour l'icône de l'app. Vos retours décident de la suite.</p>
+      <span class="eyebrow" data-fr="Programme beta" data-en="Beta program">Programme beta</span>
+      <h2 data-fr='Construisez l&apos;app avec nous, <span class="cm">Yaoundé.</span>' data-en='Build the app with us, <span class="cm">Yaoundé.</span>'>Construisez l'app avec nous, <span class="cm">Yaoundé.</span></h2>
+      <p class="sec-sub" style="margin-bottom:0" data-fr="Testez les nouveautés en avant-première, signalez les bugs, votez pour les prochaines fonctionnalités — et même pour l'icône de l'app. Vos retours décident de la suite." data-en="Try new features first, report bugs, vote on what comes next — even on the app icon. Your feedback decides what's next.">Testez les nouveautés en avant-première, signalez les bugs, votez pour les prochaines fonctionnalités — et même pour l'icône de l'app. Vos retours décident de la suite.</p>
     </div>
     <div class="comm-actions">
       <a class="btn btn-wa" href="https://chat.whatsapp.com/KaUMkKoAVGHEdwzuqg6bkp">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 8.8c.4 2.6 3.6 5.8 6.2 6.2l1.2-1.6-2.2-1.1-1 .7c-.9-.4-1.8-1.3-2.2-2.2l.7-1-1.1-2.2L9 8.8Z" fill="#fff"/></svg>
-        Rejoindre la communauté WhatsApp
+        <span data-fr="Rejoindre la communauté WhatsApp" data-en="Join the WhatsApp community">Rejoindre la communauté WhatsApp</span>
       </a>
       <!-- REMPLACE # par le lien de ton Google Form -->
       <a class="btn btn-form" href="#" target="_blank" rel="noopener">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 3h8l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 12h6M9.5 15.5h6M9.5 8.5H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        S'inscrire au programme beta
+        <span data-fr="S'inscrire au programme beta" data-en="Sign up for the beta program">S'inscrire au programme beta</span>
       </a>
     </div>
   </div>
 </section>
 
 <footer>
-  <p><strong style="color:var(--craie)">GlobeTrotter Yaoundé</strong> — projet capstone CS 4122, Distributed Systems · The ICT University</p>
-  <p class="mono">Phase 1 · Monolith v1.0 · Fait avec ❤️ à Yaoundé 🇨🇲</p>
+  <p><strong style="color:var(--craie)">GlobeTrotter Yaoundé</strong> — <span data-fr="projet capstone CS 4122, Distributed Systems · The ICT University" data-en="CS 4122 capstone project, Distributed Systems · The ICT University">projet capstone CS 4122, Distributed Systems · The ICT University</span></p>
+  <p class="mono" data-fr="Phase 1 · Monolith v1.0 · Fait avec ❤️ à Yaoundé 🇨🇲" data-en="Phase 1 · Monolith v1.0 · Made with ❤️ in Yaoundé 🇨🇲">Phase 1 · Monolith v1.0 · Fait avec ❤️ à Yaoundé 🇨🇲</p>
 </footer>
 
 <script>
 // --- OS detection: highlight the right download card ---
+var detectedOS = { fr: null, en: null };
 (function(){
   var ua = navigator.userAgent;
-  var os = null, cardId = null;
-  if (/Android/i.test(ua)) { os = "Android"; cardId = "card-android"; }
-  else if (/Windows/i.test(ua)) { os = "Windows"; cardId = "card-windows"; }
-  else if (/iPhone|iPad|Macintosh|Linux/i.test(ua)) { os = "votre navigateur"; cardId = "card-web"; }
+  var cardId = null;
+  if (/Android/i.test(ua)) { detectedOS.fr = "Android"; detectedOS.en = "Android"; cardId = "card-android"; }
+  else if (/Windows/i.test(ua)) { detectedOS.fr = "Windows"; detectedOS.en = "Windows"; cardId = "card-windows"; }
+  else if (/iPhone|iPad|Macintosh|Linux/i.test(ua)) { detectedOS.fr = "votre navigateur"; detectedOS.en = "your browser"; cardId = "card-web"; }
   if (cardId) {
     document.getElementById(cardId).classList.add("reco");
     var note = document.getElementById("detectNote");
-    document.getElementById("detectOS").textContent = os;
+    document.getElementById("detectOS").textContent = detectedOS[currentLang()] || detectedOS.fr;
     note.hidden = false;
   }
 })();
@@ -562,6 +582,35 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
   }, {threshold:.12});
   els.forEach(function(e){ io.observe(e); });
 })();
+
+// --- Language switch (FR / EN) ---
+function currentLang(){
+  return localStorage.getItem("gt-lang") || "fr";
+}
+function applyLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-" + lang + "]").forEach(function(el){
+    el.innerHTML = el.getAttribute("data-" + lang);
+  });
+  var metaDesc = document.getElementById("metaDesc");
+  if (metaDesc) metaDesc.setAttribute("content", metaDesc.getAttribute("data-" + lang));
+  var ogTitle = document.getElementById("ogTitle");
+  if (ogTitle) ogTitle.setAttribute("content", ogTitle.getAttribute("data-" + lang));
+  var ogDesc = document.getElementById("ogDesc");
+  if (ogDesc) ogDesc.setAttribute("content", ogDesc.getAttribute("data-" + lang));
+  if (detectedOS.fr) {
+    var osEl = document.getElementById("detectOS");
+    if (osEl) osEl.textContent = detectedOS[lang] || detectedOS.fr;
+  }
+  document.querySelectorAll("[data-lang-btn]").forEach(function(btn){
+    btn.classList.toggle("active", btn.getAttribute("data-lang-btn") === lang);
+  });
+  localStorage.setItem("gt-lang", lang);
+}
+document.querySelectorAll("[data-lang-btn]").forEach(function(btn){
+  btn.addEventListener("click", function(){ applyLang(btn.getAttribute("data-lang-btn")); });
+});
+applyLang(currentLang());
 </script>
 </body>
 </html>
