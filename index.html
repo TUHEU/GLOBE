@@ -77,9 +77,9 @@ nav{
   padding:12px 22px;border-radius:14px;
   font-family:'Outfit';font-weight:700;font-size:15px;
   text-decoration:none;cursor:pointer;border:none;
-  white-space:nowrap;flex-shrink:0;
   transition:transform .18s,box-shadow .18s,background .18s;
 }
+.nav-links .btn{white-space:nowrap;flex-shrink:0}
 .btn:focus-visible{outline:3px solid var(--vertclair);outline-offset:2px}
 .btn-orange{
   background:linear-gradient(120deg,#FB923C,var(--braise));
@@ -319,6 +319,7 @@ h2{
   border:1px solid rgba(252,209,22,.25);
   display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center;
 }
+#communaute .comm-box > div{min-width:0}
 .comm-box h2{margin-bottom:12px}
 .comm-box h2 .cm{color:var(--etoile)}
 .comm-actions{display:flex;flex-direction:column;gap:13px}
