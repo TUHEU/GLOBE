@@ -244,6 +244,23 @@ h2{
 
 /* ---------- DOWNLOAD HUB ---------- */
 #telecharger{position:relative}
+
+/* ---------- ACTIVITÉ (graphiques Chart.js) ---------- */
+#activite{padding:80px 24px;position:relative}
+.activite-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px;max-width:1180px;margin:36px auto 0}
+.chart-card{
+  background:var(--panneau);border:1px solid var(--ligne);border-radius:var(--r-lg);
+  padding:22px;display:flex;flex-direction:column;min-height:280px;
+}
+.chart-card h3{font-family:'Unbounded';font-size:15.5px;font-weight:700;margin-bottom:4px}
+.chart-card p{font-size:12.5px;color:var(--brume);margin-bottom:14px}
+.chart-card canvas{flex-grow:1;max-height:220px}
+.chart-empty{
+  flex-grow:1;display:flex;align-items:center;justify-content:center;
+  color:var(--brume);font-size:13px;text-align:center;padding:20px;
+}
+@media(max-width:900px){.activite-grid{grid-template-columns:1fr}}
+
 .detect-note{
   display:inline-flex;align-items:center;gap:9px;
   font-family:'JetBrains Mono';font-size:12px;color:var(--vertclair);
@@ -455,6 +472,31 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
 </header>
 
 <!-- ================= DOWNLOAD HUB ================= -->
+<section id="activite">
+  <span class="eyebrow reveal" data-fr="En direct" data-en="Live">En direct</span>
+  <h2 class="reveal" data-fr="L'activité de la communauté" data-en="Community activity">L'activité de la communauté</h2>
+  <div class="activite-grid">
+    <div class="chart-card reveal">
+      <h3 data-fr="Croissance de la communauté" data-en="Community growth">Croissance de la communauté</h3>
+      <p data-fr="Nouveaux comptes et sorties créées, par semaine" data-en="New accounts and trips created, per week">Nouveaux comptes et sorties créées, par semaine</p>
+      <canvas id="chartGrowth" role="img" aria-label="Graphique de croissance hebdomadaire"></canvas>
+      <div class="chart-empty" id="chartGrowthEmpty" hidden data-fr="Pas encore assez de données pour ce graphique" data-en="Not enough data yet for this chart">Pas encore assez de données pour ce graphique</div>
+    </div>
+    <div class="chart-card reveal">
+      <h3 data-fr="Lieux par catégorie" data-en="Places by category">Lieux par catégorie</h3>
+      <p data-fr="Répartition des 51 destinations du catalogue" data-en="Breakdown of the 51 catalog destinations">Répartition des 51 destinations du catalogue</p>
+      <canvas id="chartCategories" role="img" aria-label="Graphique des lieux par catégorie"></canvas>
+      <div class="chart-empty" id="chartCategoriesEmpty" hidden>—</div>
+    </div>
+    <div class="chart-card reveal">
+      <h3 data-fr="Lieux les plus populaires" data-en="Most popular places">Lieux les plus populaires</h3>
+      <p data-fr="D'après les sorties et recherches des utilisateurs" data-en="Based on user trips and searches">D'après les sorties et recherches des utilisateurs</p>
+      <canvas id="chartPopular" role="img" aria-label="Graphique des lieux les plus populaires"></canvas>
+      <div class="chart-empty" id="chartPopularEmpty" hidden>—</div>
+    </div>
+  </div>
+</section>
+
 <section id="telecharger">
   <span class="eyebrow reveal" data-fr="Téléchargements" data-en="Downloads">Téléchargements</span>
   <h2 class="reveal" data-fr="Une app. Trois façons de l'emporter." data-en="One app. Three ways to take it with you.">Une app. Trois façons de l'emporter.</h2>
@@ -572,6 +614,9 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
   <p class="mono" data-fr="Phase 1 · Monolith v1.0 · Fait avec ❤️ à Yaoundé 🇨🇲" data-en="Phase 1 · Monolith v1.0 · Made with ❤️ in Yaoundé 🇨🇲">Phase 1 · Monolith v1.0 · Fait avec ❤️ à Yaoundé 🇨🇲</p>
 </footer>
 
+<!-- Chart.js pour les graphiques d'activité - CDN, aucune étape de build
+     nécessaire, cohérent avec le reste du site (vanilla HTML/JS/CSS). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
 <script>
 // --- OS detection: highlight the right download card ---
 var detectedOS = { fr: null, en: null };
@@ -594,6 +639,10 @@ var detectedOS = { fr: null, en: null };
 // échoue (ex: /users/stats/public avant que la règle nginx correspondante
 // ne soit déployée), seul CET élément reste masqué/au repli - le reste du
 // site continue de fonctionner normalement, rien ne casse en cascade.
+// Les 3 graphiques réutilisent les MÊMES réponses fetch que les compteurs
+// (aucun appel réseau supplémentaire) - weekly_growth vient du vrai
+// created_at de chaque compte/sortie côté serveur, jamais de données
+// inventées pour "remplir" un graphique.
 (function(){
   function setText(id, value){
     var el = document.getElementById(id);
@@ -608,31 +657,129 @@ var detectedOS = { fr: null, en: null };
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0");
   }
 
+  var CHART_GRID = "rgba(244,247,255,.08)";
+  var CHART_TEXT = "rgba(244,247,255,.62)";
+  var CHART_COLORS = ["#2FA35C","#F97316","#FCD116","#3B82F6","#EA580C","#8B5CF6"];
+
+  function showChartEmpty(canvasId, emptyId){
+    var c = document.getElementById(canvasId);
+    var e = document.getElementById(emptyId);
+    if (c) c.hidden = true;
+    if (e) e.hidden = false;
+  }
+
+  // --- Graphique 1 : croissance (comptes + sorties par semaine) ---
+  var growth = {users: null, trips: null, settled: 0};
+  function maybeRenderGrowth(){
+    growth.settled++;
+    if (growth.settled < 2) return; // attend que les DEUX requêtes soient résolues (succès ou échec)
+    var users = growth.users || [];
+    var trips = growth.trips || [];
+    if (users.length === 0 && trips.length === 0) {
+      showChartEmpty("chartGrowth", "chartGrowthEmpty");
+      return;
+    }
+    // Union triée des semaines des deux séries, pour un axe commun.
+    var weeks = {};
+    users.forEach(function(p){ weeks[p.week] = true; });
+    trips.forEach(function(p){ weeks[p.week] = true; });
+    var labels = Object.keys(weeks).sort();
+    function seriesFor(data){
+      var byWeek = {};
+      data.forEach(function(p){ byWeek[p.week] = p.count; });
+      return labels.map(function(w){ return byWeek[w] || 0; });
+    }
+    new Chart(document.getElementById("chartGrowth"), {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {label: "Comptes créés", data: seriesFor(users), borderColor: CHART_COLORS[0], backgroundColor: CHART_COLORS[0]+"33", tension: .3, fill: true},
+          {label: "Sorties créées", data: seriesFor(trips), borderColor: CHART_COLORS[1], backgroundColor: CHART_COLORS[1]+"33", tension: .3, fill: true},
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {legend: {labels: {color: CHART_TEXT, font: {size: 11}}}},
+        scales: {
+          x: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {color: CHART_GRID}},
+          y: {beginAtZero: true, ticks: {color: CHART_TEXT, stepSize: 1}, grid: {color: CHART_GRID}},
+        },
+      },
+    });
+  }
+
   fetch("/destinations/stats/public")
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
     .then(function(d){
       setText("statDestinations", fmt(d.total_destinations) + "+");
       setText("statCategories", d.total_categories);
+
+      // --- Graphique 2 : lieux par catégorie ---
+      if (d.by_category && Object.keys(d.by_category).length > 0) {
+        var catLabels = Object.keys(d.by_category);
+        new Chart(document.getElementById("chartCategories"), {
+          type: "doughnut",
+          data: {
+            labels: catLabels,
+            datasets: [{data: catLabels.map(function(k){ return d.by_category[k]; }), backgroundColor: CHART_COLORS, borderWidth: 0}],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {legend: {position: "bottom", labels: {color: CHART_TEXT, font: {size: 10}, boxWidth: 10}}},
+          },
+        });
+      } else {
+        showChartEmpty("chartCategories", "chartCategoriesEmpty");
+      }
+
+      // --- Graphique 3 : lieux les plus populaires ---
+      if (d.top_popular && d.top_popular.length > 0) {
+        new Chart(document.getElementById("chartPopular"), {
+          type: "bar",
+          data: {
+            labels: d.top_popular.map(function(p){ return p.name; }),
+            datasets: [{data: d.top_popular.map(function(p){ return p.popularity; }), backgroundColor: CHART_COLORS[0], borderRadius: 6}],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true, maintainAspectRatio: false,
+            plugins: {legend: {display: false}},
+            scales: {
+              x: {beginAtZero: true, ticks: {color: CHART_TEXT}, grid: {color: CHART_GRID}},
+              y: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {display: false}},
+            },
+          },
+        });
+      } else {
+        showChartEmpty("chartPopular", "chartPopularEmpty");
+      }
     })
     .catch(function(){
       // Repli sur les derniers chiffres connus plutôt que de laisser "…" bloqué indéfiniment.
       setText("statDestinations", "50+");
       setText("statCategories", "14");
+      showChartEmpty("chartCategories", "chartCategoriesEmpty");
+      showChartEmpty("chartPopular", "chartPopularEmpty");
     });
 
   fetch("/users/stats/public")
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
     .then(function(d){
       if (d.total_users > 0) { setText("statUsers", fmt(d.total_users)); reveal("statUsersWrap"); }
+      growth.users = d.weekly_growth || [];
+      maybeRenderGrowth();
     })
-    .catch(function(){ /* endpoint pas encore accessible - on masque simplement ce compteur */ });
+    .catch(function(){ growth.users = null; maybeRenderGrowth(); /* endpoint pas encore accessible - compteur masqué */ });
 
   fetch("/itineraries/stats/public")
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
     .then(function(d){
       if (d.total_itineraries > 0) { setText("statTrips", fmt(d.total_itineraries)); reveal("statTripsWrap"); }
+      growth.trips = d.weekly_growth || [];
+      maybeRenderGrowth();
     })
-    .catch(function(){ /* idem */ });
+    .catch(function(){ growth.trips = null; maybeRenderGrowth(); /* idem */ });
 })();
 
 // --- Scroll reveal ---
