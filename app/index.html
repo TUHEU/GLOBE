@@ -29,6 +29,16 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
+  <!-- ============================================================
+       MapLibre GL JS — REQUIS pour que les cartes (maplibre_gl)
+       s'affichent sur le Web. ABSENT de ce fichier (confirmé à nouveau
+       ici), ce qui explique la carte vide sur le Web. Version @^5.24.0,
+       alignée sur maplibre_gl: ^0.26.2 dans pubspec.yaml.
+       DOIT rester AVANT flutter_bootstrap.js plus bas.
+     ============================================================ -->
+  <script src='https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.js'></script>
+  <link href='https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.css' rel='stylesheet'/>
+
   <title>globetrotter</title>
   <link rel="manifest" href="manifest.json">
 </head>
