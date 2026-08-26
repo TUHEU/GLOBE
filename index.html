@@ -689,74 +689,107 @@ var detectedOS = { fr: null, en: null };
       data.forEach(function(p){ byWeek[p.week] = p.count; });
       return labels.map(function(w){ return byWeek[w] || 0; });
     }
-    new Chart(document.getElementById("chartGrowth"), {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [
-          {label: "Comptes créés", data: seriesFor(users), borderColor: CHART_COLORS[0], backgroundColor: CHART_COLORS[0]+"33", tension: .3, fill: true},
-          {label: "Sorties créées", data: seriesFor(trips), borderColor: CHART_COLORS[1], backgroundColor: CHART_COLORS[1]+"33", tension: .3, fill: true},
-        ],
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {legend: {labels: {color: CHART_TEXT, font: {size: 11}}}},
-        scales: {
-          x: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {color: CHART_GRID}},
-          y: {beginAtZero: true, ticks: {color: CHART_TEXT, stepSize: 1}, grid: {color: CHART_GRID}},
+    // Comme pour les 2 autres graphiques : si Chart.js n'a pas pu se
+    // charger (CDN bloqué, ad-blocker...), on affiche juste le message
+    // "pas assez de données" au lieu de laisser l'exception remonter -
+    // ce qui, ici, aurait provoqué un second appel à maybeRenderGrowth()
+    // via le .catch() de la promesse appelante, faussant le compteur
+    // `settled` et pouvant déclencher un rendu en double.
+    if (typeof Chart === "undefined") {
+      showChartEmpty("chartGrowth", "chartGrowthEmpty");
+      return;
+    }
+    try {
+      new Chart(document.getElementById("chartGrowth"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {label: "Comptes créés", data: seriesFor(users), borderColor: CHART_COLORS[0], backgroundColor: CHART_COLORS[0]+"33", tension: .3, fill: true},
+            {label: "Sorties créées", data: seriesFor(trips), borderColor: CHART_COLORS[1], backgroundColor: CHART_COLORS[1]+"33", tension: .3, fill: true},
+          ],
         },
-      },
-    });
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {legend: {labels: {color: CHART_TEXT, font: {size: 11}}}},
+          scales: {
+            x: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {color: CHART_GRID}},
+            y: {beginAtZero: true, ticks: {color: CHART_TEXT, stepSize: 1}, grid: {color: CHART_GRID}},
+          },
+        },
+      });
+    } catch (e) {
+      showChartEmpty("chartGrowth", "chartGrowthEmpty");
+    }
   }
 
   fetch("/destinations/stats/public")
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
     .then(function(d){
+      // Les compteurs sont mis à jour ICI, en dehors de tout bloc qui
+      // pourrait échouer à cause de Chart.js (CDN bloqué, ad-blocker,
+      // erreur interne à la librairie...). Avant ce correctif, une seule
+      // exception dans `new Chart(...)` remontait jusqu'au .catch() plus
+      // bas, qui écrasait alors CES compteurs déjà corrects avec les
+      // valeurs de repli ("50+") - même quand l'API avait très bien
+      // répondu. Chaque graphique a maintenant son propre filet de
+      // sécurité, complètement indépendant des compteurs.
       setText("statDestinations", fmt(d.total_destinations) + "+");
       setText("statCategories", d.total_categories);
 
+      var chartJsReady = typeof Chart !== "undefined";
+
       // --- Graphique 2 : lieux par catégorie ---
-      if (d.by_category && Object.keys(d.by_category).length > 0) {
-        var catLabels = Object.keys(d.by_category);
-        new Chart(document.getElementById("chartCategories"), {
-          type: "doughnut",
-          data: {
-            labels: catLabels,
-            datasets: [{data: catLabels.map(function(k){ return d.by_category[k]; }), backgroundColor: CHART_COLORS, borderWidth: 0}],
-          },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {legend: {position: "bottom", labels: {color: CHART_TEXT, font: {size: 10}, boxWidth: 10}}},
-          },
-        });
-      } else {
+      try {
+        if (chartJsReady && d.by_category && Object.keys(d.by_category).length > 0) {
+          var catLabels = Object.keys(d.by_category);
+          new Chart(document.getElementById("chartCategories"), {
+            type: "doughnut",
+            data: {
+              labels: catLabels,
+              datasets: [{data: catLabels.map(function(k){ return d.by_category[k]; }), backgroundColor: CHART_COLORS, borderWidth: 0}],
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: {legend: {position: "bottom", labels: {color: CHART_TEXT, font: {size: 10}, boxWidth: 10}}},
+            },
+          });
+        } else {
+          showChartEmpty("chartCategories", "chartCategoriesEmpty");
+        }
+      } catch (e) {
         showChartEmpty("chartCategories", "chartCategoriesEmpty");
       }
 
       // --- Graphique 3 : lieux les plus populaires ---
-      if (d.top_popular && d.top_popular.length > 0) {
-        new Chart(document.getElementById("chartPopular"), {
-          type: "bar",
-          data: {
-            labels: d.top_popular.map(function(p){ return p.name; }),
-            datasets: [{data: d.top_popular.map(function(p){ return p.popularity; }), backgroundColor: CHART_COLORS[0], borderRadius: 6}],
-          },
-          options: {
-            indexAxis: "y",
-            responsive: true, maintainAspectRatio: false,
-            plugins: {legend: {display: false}},
-            scales: {
-              x: {beginAtZero: true, ticks: {color: CHART_TEXT}, grid: {color: CHART_GRID}},
-              y: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {display: false}},
+      try {
+        if (chartJsReady && d.top_popular && d.top_popular.length > 0) {
+          new Chart(document.getElementById("chartPopular"), {
+            type: "bar",
+            data: {
+              labels: d.top_popular.map(function(p){ return p.name; }),
+              datasets: [{data: d.top_popular.map(function(p){ return p.popularity; }), backgroundColor: CHART_COLORS[0], borderRadius: 6}],
             },
-          },
-        });
-      } else {
+            options: {
+              indexAxis: "y",
+              responsive: true, maintainAspectRatio: false,
+              plugins: {legend: {display: false}},
+              scales: {
+                x: {beginAtZero: true, ticks: {color: CHART_TEXT}, grid: {color: CHART_GRID}},
+                y: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {display: false}},
+              },
+            },
+          });
+        } else {
+          showChartEmpty("chartPopular", "chartPopularEmpty");
+        }
+      } catch (e) {
         showChartEmpty("chartPopular", "chartPopularEmpty");
       }
     })
     .catch(function(){
-      // Repli sur les derniers chiffres connus plutôt que de laisser "…" bloqué indéfiniment.
+      // N'est atteint QUE si le fetch lui-même échoue (réseau, 404, 500...)
+      // - plus jamais à cause d'un souci de rendu graphique.
       setText("statDestinations", "50+");
       setText("statCategories", "14");
       showChartEmpty("chartCategories", "chartCategoriesEmpty");
