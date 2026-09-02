@@ -246,20 +246,22 @@ h2{
 #telecharger{position:relative}
 
 /* ---------- ACTIVITÉ (graphiques Chart.js) ---------- */
-#activite{padding:80px 24px;position:relative}
-.activite-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px;max-width:1180px;margin:36px auto 0}
+#activite{padding:80px 24px;position:relative;width:100%;overflow:visible}
+.activite-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:20px;max-width:1180px;margin:36px auto 0}
 .chart-card{
   background:var(--panneau);border:1px solid var(--ligne);border-radius:var(--r-lg);
-  padding:22px;display:flex;flex-direction:column;min-height:280px;
+  padding:22px;display:flex;flex-direction:column;min-height:330px;min-width:0;overflow:hidden;
 }
-.chart-card h3{font-family:'Unbounded';font-size:15.5px;font-weight:700;margin-bottom:4px}
-.chart-card p{font-size:12.5px;color:var(--brume);margin-bottom:14px}
-.chart-card canvas{flex-grow:1;max-height:220px}
+.chart-card h3{font-family:'Unbounded';font-size:15.5px;font-weight:700;margin-bottom:4px;overflow-wrap:anywhere}
+.chart-card p{font-size:12.5px;color:var(--brume);margin-bottom:14px;overflow-wrap:anywhere}
+.chart-canvas-wrap{position:relative;width:100%;height:250px;min-height:220px;min-width:0;flex:0 0 auto}
+.chart-card canvas{display:block;width:100%!important;height:100%!important}
+.chart-card .chart-empty{min-height:250px}
 .chart-empty{
   flex-grow:1;display:flex;align-items:center;justify-content:center;
   color:var(--brume);font-size:13px;text-align:center;padding:20px;
 }
-@media(max-width:900px){.activite-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.activite-grid{grid-template-columns:minmax(0,1fr)}.chart-canvas-wrap{height:240px}}
 
 .detect-note{
   display:inline-flex;align-items:center;gap:9px;
@@ -268,7 +270,7 @@ h2{
   padding:8px 14px;border-radius:20px;margin-bottom:34px;
 }
 .detect-note b{color:var(--mandarine)}
-.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:22px;min-width:0}
 .dl-card{
   background:linear-gradient(165deg,var(--encre),var(--panneau));
   border:1px solid var(--ligne);
@@ -372,7 +374,7 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
   .activite-grid{grid-template-columns:1fr 1fr;gap:16px}
 }
 @media (max-width:900px){
-  .hero{grid-template-columns:1fr;text-align:center}
+  .hero{grid-template-columns:minmax(0,1fr);text-align:center}
   .hero-sub{margin-inline:auto}
   .hero-ctas,.hero-meta{justify-content:center}
   .eyebrow{justify-content:center}
@@ -402,6 +404,8 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
   .btn-sm{padding:8px 12px;font-size:12px}
   h1{font-size:clamp(24px,8vw,36px)}
   .mock-wrap{min-height:360px}
+  .chart-canvas-wrap{height:220px;min-height:200px}
+  .chart-card{padding:16px}
 }
 </style>
 </head>
@@ -443,7 +447,8 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
       <div class="meta-item"><b id="statDestinations">…</b><span data-fr="lieux référencés" data-en="listed places">lieux référencés</span></div>
       <div class="meta-item"><b id="statCategories">…</b><span data-fr="catégories" data-en="categories">catégories</span></div>
       <div class="meta-item"><b>3</b><span data-fr="plateformes" data-en="platforms">plateformes</span></div>
-      <div class="meta-item" id="statUsersWrap"><b id="statUsers">60+</b><span data-fr="explorateurs inscrits" data-en="registered explorers">explorateurs inscrits</span></div>
+      <div class="meta-item" id="statUsersWrap"><b id="statUsers">…</b><span data-fr="explorateurs inscrits" data-en="registered explorers">explorateurs inscrits</span></div>
+      <div class="meta-item" id="statLoggedInWrap"><b id="statLoggedIn">0</b><span data-fr="explorateurs ayant ouvert une session" data-en="explorers who logged in">explorateurs ayant ouvert une session</span></div>
       <div class="meta-item" id="statTripsWrap"><b id="statTrips">13+</b><span data-fr="sorties créées" data-en="trips created">sorties créées</span></div>
     </div>
   </div>
@@ -498,20 +503,20 @@ footer .mono{font-family:'JetBrains Mono';font-size:11.5px}
   <div class="activite-grid">
     <div class="chart-card reveal">
       <h3 data-fr="Croissance de la communauté" data-en="Community growth">Croissance de la communauté</h3>
-      <p data-fr="Nouveaux comptes et sorties créées, par semaine" data-en="New accounts and trips created, per week">Nouveaux comptes et sorties créées, par semaine</p>
-      <canvas id="chartGrowth" role="img" aria-label="Graphique de croissance hebdomadaire"></canvas>
+      <p data-fr="Nouveaux comptes, utilisateurs connectés et sorties, par semaine" data-en="New accounts, logged-in users and trips, per week">Nouveaux comptes, utilisateurs connectés et sorties, par semaine</p>
+      <div class="chart-canvas-wrap"><canvas id="chartGrowth" role="img" aria-label="Graphique hebdomadaire des comptes créés, connexions réussies et sorties"></canvas></div>
       <div class="chart-empty" id="chartGrowthEmpty" hidden data-fr="Pas encore assez de données pour ce graphique" data-en="Not enough data yet for this chart">Pas encore assez de données pour ce graphique</div>
     </div>
     <div class="chart-card reveal">
       <h3 data-fr="Lieux par catégorie" data-en="Places by category">Lieux par catégorie</h3>
       <p id="catBreakdownSub" data-fr-tpl="Répartition des {n} destinations du catalogue" data-en-tpl="Breakdown of the {n} catalog destinations">Répartition des destinations du catalogue</p>
-      <canvas id="chartCategories" role="img" aria-label="Graphique des lieux par catégorie"></canvas>
+      <div class="chart-canvas-wrap"><canvas id="chartCategories" role="img" aria-label="Graphique des lieux par catégorie"></canvas></div>
       <div class="chart-empty" id="chartCategoriesEmpty" hidden>—</div>
     </div>
     <div class="chart-card reveal">
       <h3 data-fr="Lieux les plus populaires" data-en="Most popular places">Lieux les plus populaires</h3>
       <p data-fr="D'après les sorties et recherches des utilisateurs" data-en="Based on user trips and searches">D'après les sorties et recherches des utilisateurs</p>
-      <canvas id="chartPopular" role="img" aria-label="Graphique des lieux les plus populaires"></canvas>
+      <div class="chart-canvas-wrap"><canvas id="chartPopular" role="img" aria-label="Graphique des lieux les plus populaires"></canvas></div>
       <div class="chart-empty" id="chartPopularEmpty" hidden>—</div>
     </div>
   </div>
@@ -699,20 +704,22 @@ var detectedOS = { fr: null, en: null };
     if (e) e.hidden = false;
   }
 
-  // --- Graphique 1 : croissance (comptes + sorties par semaine) ---
-  var growth = {users: null, trips: null, settled: 0};
+  // --- Graphique 1 : croissance (comptes + connexions uniques + sorties) ---
+  var growth = {users: null, logins: null, trips: null, settled: 0};
+  var growthChart = null;
   function maybeRenderGrowth(){
     growth.settled++;
-    if (growth.settled < 2) return; // attend que les DEUX requêtes soient résolues (succès ou échec)
+    if (growth.settled < 2) return; // wait for users + trips responses
     var users = growth.users || [];
     var trips = growth.trips || [];
-    if (users.length === 0 && trips.length === 0) {
+    var logins = growth.logins || [];
+    if (users.length === 0 && trips.length === 0 && logins.length === 0) {
       showChartEmpty("chartGrowth", "chartGrowthEmpty");
       return;
     }
-    // Union triée des semaines des deux séries, pour un axe commun.
     var weeks = {};
     users.forEach(function(p){ weeks[p.week] = true; });
+    logins.forEach(function(p){ weeks[p.week] = true; });
     trips.forEach(function(p){ weeks[p.week] = true; });
     var labels = Object.keys(weeks).sort();
     function seriesFor(data){
@@ -720,32 +727,31 @@ var detectedOS = { fr: null, en: null };
       data.forEach(function(p){ byWeek[p.week] = p.count; });
       return labels.map(function(w){ return byWeek[w] || 0; });
     }
-    // Comme pour les 2 autres graphiques : si Chart.js n'a pas pu se
-    // charger (CDN bloqué, ad-blocker...), on affiche juste le message
-    // "pas assez de données" au lieu de laisser l'exception remonter -
-    // ce qui, ici, aurait provoqué un second appel à maybeRenderGrowth()
-    // via le .catch() de la promesse appelante, faussant le compteur
-    // `settled` et pouvant déclencher un rendu en double.
     if (typeof Chart === "undefined") {
       showChartEmpty("chartGrowth", "chartGrowthEmpty");
       return;
     }
     try {
-      new Chart(document.getElementById("chartGrowth"), {
+      var canvas = document.getElementById("chartGrowth");
+      if (growthChart) growthChart.destroy();
+      growthChart = new Chart(canvas, {
         type: "line",
         data: {
           labels: labels,
           datasets: [
-            {label: "Comptes créés", data: seriesFor(users), borderColor: CHART_COLORS[0], backgroundColor: CHART_COLORS[0]+"33", tension: .3, fill: true},
-            {label: "Sorties créées", data: seriesFor(trips), borderColor: CHART_COLORS[1], backgroundColor: CHART_COLORS[1]+"33", tension: .3, fill: true},
+            {label: currentLang() === "en" ? "New accounts" : "Comptes créés", data: seriesFor(users), borderColor: CHART_COLORS[0], backgroundColor: CHART_COLORS[0]+"22", tension: .3, fill: true, pointRadius: 3},
+            {label: currentLang() === "en" ? "Unique logins" : "Connexions uniques", data: seriesFor(logins), borderColor: CHART_COLORS[2], backgroundColor: "transparent", tension: .3, fill: false, pointRadius: 3},
+            {label: currentLang() === "en" ? "Trips created" : "Sorties créées", data: seriesFor(trips), borderColor: CHART_COLORS[1], backgroundColor: CHART_COLORS[1]+"22", tension: .3, fill: true, pointRadius: 3}
           ],
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: {legend: {labels: {color: CHART_TEXT, font: {size: 11}}}},
+          responsive: true, maintainAspectRatio: false, resizeDelay: 80,
+          animation: false,
+          interaction: {mode: "index", intersect: false},
+          plugins: {legend: {labels: {color: CHART_TEXT, font: {size: 10}, boxWidth: 12, padding: 10}}},
           scales: {
-            x: {ticks: {color: CHART_TEXT, font: {size: 10}}, grid: {color: CHART_GRID}},
-            y: {beginAtZero: true, ticks: {color: CHART_TEXT, stepSize: 1}, grid: {color: CHART_GRID}},
+            x: {ticks: {color: CHART_TEXT, font: {size: 9}, maxRotation: 0, autoSkip: true, maxTicksLimit: 7}, grid: {color: CHART_GRID}},
+            y: {beginAtZero: true, ticks: {color: CHART_TEXT, stepSize: 1, precision: 0}, grid: {color: CHART_GRID}},
           },
         },
       });
@@ -783,7 +789,7 @@ var detectedOS = { fr: null, en: null };
               datasets: [{data: catLabels.map(function(k){ return d.by_category[k]; }), backgroundColor: CATEGORY_CHART_COLORS, borderWidth: 0}],
             },
             options: {
-              responsive: true, maintainAspectRatio: false,
+              responsive: true, maintainAspectRatio: false, resizeDelay: 80, animation: false,
               plugins: {legend: {position: "bottom", labels: {color: CHART_TEXT, font: {size: 10}, boxWidth: 10}}},
             },
           });
@@ -805,7 +811,7 @@ var detectedOS = { fr: null, en: null };
             },
             options: {
               indexAxis: "y",
-              responsive: true, maintainAspectRatio: false,
+              responsive: true, maintainAspectRatio: false, resizeDelay: 80, animation: false,
               plugins: {legend: {display: false}},
               scales: {
                 x: {beginAtZero: true, ticks: {color: CHART_TEXT}, grid: {color: CHART_GRID}},
@@ -832,11 +838,13 @@ var detectedOS = { fr: null, en: null };
   fetch("/users/stats/public")
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
     .then(function(d){
-      if (d.total_users > 0) { setText("statUsers", fmt(d.total_users) + "+"); }
+      setText("statUsers", fmt(d.total_users || 0) + "+");
+      setText("statLoggedIn", fmt(d.unique_logged_in_users || 0));
       growth.users = d.weekly_growth || [];
+      growth.logins = d.weekly_logins || [];
       maybeRenderGrowth();
     })
-    .catch(function(){ growth.users = null; maybeRenderGrowth(); /* fallback déjà affiché dans le HTML */ });
+    .catch(function(){ growth.users = null; growth.logins = null; maybeRenderGrowth(); });
 
   fetch("/itineraries/stats/public")
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
