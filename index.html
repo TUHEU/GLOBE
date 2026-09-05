@@ -2,7 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title data-fr="GlobeTrotter Yaoundé — Découvrez Yaoundé autrement" data-en="GlobeTrotter Yaoundé — Discover Yaoundé like never before">GlobeTrotter Yaoundé — Découvrez Yaoundé autrement</title>
 <meta name="description" id="metaDesc" data-fr="L'assistant de voyage intelligent pour Yaoundé : recommandations personnalisées, itinéraires de sorties, prix en FCFA. Disponible sur Android, Web et Windows." data-en="The smart travel assistant for Yaoundé: personalized recommendations, outing itineraries, prices in FCFA. Available on Android, Web and Windows." content="L'assistant de voyage intelligent pour Yaoundé : recommandations personnalisées, itinéraires de sorties, prix en FCFA. Disponible sur Android, Web et Windows.">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
@@ -40,6 +42,14 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+html,body{
+  /* Belt-and-braces alongside the viewport meta tag above: iOS Safari
+     (and some others) ignore user-scalable=no for accessibility reasons,
+     but they DO respect touch-action, so pinch-to-zoom is blocked here
+     regardless of which mechanism the browser honors. pan-x/pan-y keep
+     normal scrolling working - only the pinch gesture itself is disabled. */
+  touch-action:pan-x pan-y;
+}
 body{
   font-family:'Outfit',sans-serif;
   background:var(--nuit);
