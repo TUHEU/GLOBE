@@ -31,10 +31,10 @@
 
   <!-- ============================================================
        MapLibre GL JS — REQUIS pour que les cartes (maplibre_gl)
-       s'affichent sur le Web. Manquait dans ce build release, ce
-       qui causait la carte vide (elle fonctionne déjà sur mobile,
-       qui utilise des bindings natifs et n'a pas besoin de ce
-       script). DOIT rester AVANT flutter_bootstrap.js plus bas.
+       s'affichent sur le Web. Ces deux lignes étaient absentes de
+       ce build, ce qui explique la carte vide (le code compilé
+       référence l'objet global `maplibregl` mais rien ne le
+       chargeait). DOIT rester AVANT flutter_bootstrap.js plus bas.
      ============================================================ -->
   <script src='https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.js'></script>
   <link href='https://unpkg.com/maplibre-gl@^5.24.0/dist/maplibre-gl.css' rel='stylesheet'/>
